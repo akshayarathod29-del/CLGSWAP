@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CampusSwap – Students lend & sell to students</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;--bg:#f4f1ec;--sf:#fff;--tx:#14203f;--mu:#5f6578;--rd:#8c1d40;--ln:#ddd6cb}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1050px;margin:0 auto;padding:0 18px}
+h1,h2,h3,.logo{font-family:Georgia,"Times New Roman",serif}
+header{background:radial-gradient(circle at 85% 10%,rgba(230,195,106,.18),transparent 40%),linear-gradient(135deg,#0f1b3d 0%,#14203f 45%,#6d1a36 100%);color:#fff}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
+.logo{font-size:1.35rem;font-weight:700}.logo span{color:#e6c36a}
+.hero{padding:26px 0 34px}
+.hero h1{font-size:clamp(1.9rem,5.5vw,3rem);line-height:1.1;margin:0 0 10px;max-width:20ch}.hero h1 em{color:#e6c36a}
+.hero p{color:#dcdfe8;max-width:54ch;margin:0 0 18px}
+button,.btn{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 18px;font-weight:700;background:var(--rd);color:#fff;text-decoration:none;display:inline-block;text-align:center}
+.btn.k{background:#14203f}.btn.g{background:transparent;color:var(--tx);border:1px solid var(--ln)}
+input,select,textarea{font:inherit;color:var(--tx);background:#fff;border:1px solid var(--ln);border-radius:10px;padding:11px 12px;width:100%}
+.tabs{display:flex;gap:8px;margin:18px 0}
+.tab{background:var(--sf);color:var(--tx);border:1px solid var(--ln)}.tab.on{background:#14203f;color:#fff;border-color:#14203f}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:640px){.filters{grid-template-columns:1fr}.two{grid-template-columns:1fr!important}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-bottom:30px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(20,32,63,.05)}
+.top{display:flex;justify-content:space-between;align-items:center}
+.ic{font-size:2rem}
+.tag{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:#14203f;color:#fff}
+.tag.r{background:var(--rd)}.tag.s{background:#999}
+.card h3{margin:2px 0 0;font-size:1.08rem}
+.card p{margin:0;color:var(--mu);font-size:.9rem;flex:1}
+.meta{font-size:.82rem;color:var(--mu)}
+.price{font-size:1.25rem;font-weight:800;color:var(--rd);font-family:Georgia,serif}.price small{color:var(--mu);font-weight:400;font-size:.8rem}
+.acts{display:flex;gap:8px;margin-top:8px}.acts>*{flex:1;padding:9px 10px;font-size:.9rem}
+.form{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:22px;max-width:680px;margin-bottom:40px}
+.form label{display:block;font-weight:600;font-size:.88rem;margin:12px 0 4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.note{background:#f7eaee;border-left:4px solid var(--rd);padding:10px 14px;border-radius:8px;font-size:.88rem;margin:12px 0}
+#msg{margin-top:12px;font-weight:600}.ok{color:#1a7f37}.er{color:var(--rd)}
+.empty{color:var(--mu);padding:24px 0}
+dialog{border:0;border-radius:18px;padding:22px;max-width:420px;width:calc(100% - 32px);background:#fff;color:var(--tx)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+footer{background:#14203f;color:#d2d2d2;padding:22px 0 28px;font-size:.88rem}
+h2{font-size:1.5rem;margin:6px 0 12px}
+
+.card{position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.card::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#14203f,#8c1d40)}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(20,32,63,.14)}
+.tag.w{background:#e6c36a;color:#14203f}
+.logo{display:flex;align-items:center;gap:10px}
+.perks{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 0}.perks span{font-size:.82rem;color:#14203f;background:#fff;border:1px solid var(--ln);padding:6px 12px;border-radius:99px;font-weight:600}
+.hero .btn.g{color:#fff;border-color:rgba(255,255,255,.4)}
+.btn.gold,button.gold{background:#e6c36a;color:#14203f}
+.tab{font-weight:600}
+</style>
+</head>
+<body>
+<header><div class="w">
+<div class="bar"><div class="logo"><svg width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0d27f"/><stop offset="1" stop-color="#c98f2e"/></linearGradient></defs><rect width="48" height="48" rx="13" fill="url(#lg)"/><path d="M13 19h20l-5-5M35 29H15l5 5" stroke="#14203f" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Campus<span>Swap</span></div></div><div id="who" style="font-size:.85rem;color:#bbb"></div></div>
+<div class="hero"><h1>Don't throw it. <em>Pass it on.</em></h1>
+<p>Done with your drawing kit, lab coat or textbooks? Lend or sell them to students who need them, and pay each other directly by UPI.</p>
+<button class="gold" onclick="go('post')">+ List an item</button> <button class="btn g" onclick="go('wanted')">I need something</button> <button class="btn g" onclick="go('browse')">Browse items</button></div>
+</div></header>
+
+<main class="w">
+<div class="perks"><span>✔ Free to list</span><span>✔ Pay directly by UPI</span><span>✔ Students only, on campus</span></div>
+<div class="tabs"><button class="tab on" id="t-browse" onclick="go('browse')">Browse</button><button class="tab" id="t-wanted" onclick="go('wanted')">Wanted board</button><button class="tab" id="t-post" onclick="go('post')">List an item</button><button class="tab" id="t-mine" onclick="go('mine')">My listings</button></div>
+
+<section id="v-browse">
+<div class="filters"><input id="q" placeholder="Search: drawing kit, calculator, lab coat…"><select id="fc"></select><select id="fm"><option value="">Lend & Sell</option><option value="rent">Lend (rent)</option><option value="sell">Sell</option></select></div>
+<div class="grid" id="grid"></div>
+</section>
+
+<section id="v-wanted" hidden>
+<h2>Wanted board</h2>
+<p class="meta" style="margin:0 0 14px;font-size:.95rem">Need something for a semester? Post it here. Students who have it will WhatsApp you.</p>
+<div class="form" style="margin-bottom:26px">
+<label>What do you need?</label><input id="wtitle" maxlength="60" placeholder="e.g. Engineering drawing kit for 6 months">
+<div class="two"><div><label>Category</label><select id="wcat"></select></div><div><label>Budget (₹, optional)</label><input id="wbudget" type="number" min="0" inputmode="numeric"></div></div>
+<div class="two"><div><label>Needed for (months, 0 if buying)</label><input id="wmonths" type="number" min="0" max="12" value="0"></div><div><label>College / campus</label><input id="wcollege"></div></div>
+<div class="two"><div><label>Your name</label><input id="wname"></div><div><label>WhatsApp number (10 digits)</label><input id="wphone" type="tel" inputmode="numeric" maxlength="10"></div></div>
+<label>Note (optional)</label><textarea id="wnote" rows="2" maxlength="200"></textarea>
+<div style="margin-top:14px"><button id="wsubmit">Post request</button></div><div id="wmsg" role="status"></div>
+</div>
+<div class="grid" id="wgrid"></div>
+</section>
+
+<section id="v-post" hidden>
+<h2>List an item</h2>
+<div class="form">
+<label>What is it?</label><input id="title" maxlength="60" placeholder="e.g. Engineering drawing kit (Mini drafter + set squares)">
+<div class="two"><div><label>Category</label><select id="cat"></select></div><div><label>I want to</label><select id="mode"><option value="rent">Lend it (rent)</option><option value="sell">Sell it</option></select></div></div>
+<div class="two"><div><label id="plabel">Rent per month (₹)</label><input id="price" type="number" min="0" inputmode="numeric"></div><div id="dwrap"><label>Refundable deposit (₹)</label><input id="dep" type="number" min="0" value="0" inputmode="numeric"></div></div>
+<div class="two"><div id="mwrap"><label>Available for (months)</label><input id="months" type="number" min="1" max="12" value="6"></div><div><label>Condition</label><select id="cond"><option>Like new</option><option>Good</option><option>Used, works fine</option></select></div></div>
+<label>Description</label><textarea id="desc" rows="3" maxlength="240" placeholder="What is included, branch/semester it suits, any wear…"></textarea>
+<div class="two"><div><label>Your name</label><input id="name"></div><div><label>WhatsApp number (10 digits)</label><input id="phone" type="tel" inputmode="numeric" maxlength="10"></div></div>
+<div class="two"><div><label>Your UPI ID</label><input id="upi" placeholder="name@bank"></div><div><label>College / campus</label><input id="college"></div></div>
+<div class="note">Your name, number and UPI ID are shown on the listing so buyers can reach and pay you. Only share what you are comfortable with.</div>
+<button id="submit">Publish listing</button><div id="msg" role="status"></div>
+</div>
+</section>
+
+<section id="v-mine" hidden><h2>My listings</h2><div class="grid" id="mygrid"></div></section>
+
+<section>
+<h2>How it works</h2>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+<div class="card"><h3>1. List it</h3><p>Add photos-free details, price and how long it is available.</p></div>
+<div class="card"><h3>2. Connect</h3><p>Interested students WhatsApp you and meet on campus to check the item.</p></div>
+<div class="card"><h3>3. Pay by UPI</h3><p>The buyer taps Pay and the amount opens in their UPI app. Money goes straight to you.</p></div>
+</div>
+<div class="note"><b>Stay safe:</b> meet inside the campus, inspect the item before paying, and keep the UPI payment screenshot. CampusSwap does not hold money; deposits are returned by the lender when the item comes back.</div>
+</section>
+</main>
+<footer><div class="w">© CampusSwap · Built by students, for students</div></footer>
+
+<dialog id="dlg"></dialog>
+
+<script>
+const $=id=>document.getElementById(id);
+const CATS={"Engineering":"📐","Books":"📚","Lab & Medical":"🥼","Electronics":"💻","Hostel & Daily":"🛏️","Other":"🎒"};
+const SAMPLE=[
+{id:"s1",ownerId:"sample",title:"Engineering drawing kit",cat:"Engineering",mode:"rent",price:150,dep:300,months:6,cond:"Good",desc:"Mini drafter, set squares, compass and scale. Perfect for first-year ED.",name:"Sample Seller",phone:"9000000001",upi:"sample@upi",college:"Sample College",ts:3},
+{id:"s2",ownerId:"sample",title:"Scientific calculator (fx-991)",cat:"Electronics",mode:"sell",price:600,dep:0,months:0,cond:"Like new",desc:"Used one semester. Fresh batteries included.",name:"Sample Seller",phone:"9000000002",upi:"sample@upi",college:"Sample College",ts:2},
+{id:"s3",ownerId:"sample",title:"Lab coat (size M)",cat:"Lab & Medical",mode:"rent",price:60,dep:100,months:4,cond:"Good",desc:"Washed and ironed, white cotton.",name:"Sample Seller",phone:"9000000003",upi:"sample@upi",college:"Sample College",ts:1}];
+let db=null,uid=null,items=[],local=[];
+const all=()=>{const real=[...local,...items];return real.length?real:SAMPLE};
+const isSample=()=>!local.length&&!items.length;
+const clean=s=>String(s||"").slice(0,300);
+
+function go(v){["browse","wanted","post","mine"].forEach(x=>{$("v-"+x).hidden=x!==v;$("t-"+x).classList.toggle("on",x===v)});if(v==="mine")drawMine();if(v==="wanted")drawW();window.scrollTo({top:0,behavior:"smooth"})}
+
+function card(it,own){
+ const c=document.createElement("div");c.className="card";
+ const top=document.createElement("div");top.className="top";
+ const ic=document.createElement("span");ic.className="ic";ic.textContent=CATS[it.cat]||"🎒";
+ const tg=document.createElement("span");tg.className="tag "+(it.mode==="rent"?"r":"s");tg.textContent=it.mode==="rent"?"Lend":"Sell";
+ top.append(ic,tg);
+ const h=document.createElement("h3");h.textContent=clean(it.title);
+ const p=document.createElement("p");p.textContent=clean(it.desc)||"No description.";
+ const m=document.createElement("div");m.className="meta";
+ m.textContent=[it.cond,it.college,it.mode==="rent"?("Up to "+it.months+" months"+(it.dep?" · ₹"+it.dep+" deposit":"")):""].filter(Boolean).join(" · ");
+ const pr=document.createElement("div");pr.className="price";
+ pr.textContent="₹"+Number(it.price||0);
+ if(it.mode==="rent"){const sm=document.createElement("small");sm.textContent=" / month";pr.append(sm)}
+ c.append(top,h,p,m,pr);
+ const a=document.createElement("div");a.className="acts";
+ if(own){const d=document.createElement("button");d.className="btn g";d.textContent="Remove";d.onclick=()=>removeItem(it.id);a.append(d)}
+ else{
+  const w=document.createElement("a");w.className="btn k";w.textContent="WhatsApp";w.target="_blank";w.rel="noopener";
+  w.href="https://wa.me/91"+String(it.phone||"").replace(/\D/g,"")+"?text="+encodeURIComponent("Hi, I saw your listing on CampusSwap: "+it.title);
+  const b=document.createElement("button");b.textContent="Pay / Reserve";b.onclick=()=>payDlg(it);
+  a.append(w,b)}
+ c.append(a);return c}
+
+function draw(){
+ const g=$("grid");g.innerHTML="";
+ const q=$("q").value.trim().toLowerCase(),fc=$("fc").value,fm=$("fm").value;
+ const list=all().filter(i=>(!fc||i.cat===fc)&&(!fm||i.mode===fm)&&(clean(i.title)+clean(i.desc)+i.cat).toLowerCase().includes(q));
+ if(isSample()){const n=document.createElement("div");n.className="note";n.style.gridColumn="1/-1";n.textContent="These are sample listings. Be the first to list a real item!";g.append(n)}
+ if(!list.length){const e=document.createElement("div");e.className="empty";e.textContent="Nothing matches yet. Try another search.";g.append(e);return}
+ list.forEach(i=>g.append(card(i,false)));
+}
+function mineList(){return [...local,...items.filter(i=>i.ownerId===uid)]}
+function drawMine(){
+ const g=$("mygrid");g.innerHTML="";const l=mineList();
+ if(!l.length){g.innerHTML='<div class="empty">You have not listed anything yet.</div>';return}
+ l.forEach(i=>g.append(card(i,true)));
+}
+
+function payDlg(it){
+ const d=$("dlg");d.innerHTML="";
+ const h=document.createElement("h3");h.textContent=it.title;
+ const info=document.createElement("p");info.className="meta";
+ const rent=it.mode==="rent";
+ d.append(h,info);
+ let mi=null;
+ if(rent){const l=document.createElement("label");l.textContent="How many months? (max "+it.months+")";l.style.cssText="display:block;font-weight:600;margin:10px 0 4px";
+  mi=document.createElement("input");mi.type="number";mi.min=1;mi.max=it.months;mi.value=Math.min(6,it.months);d.append(l,mi)}
+ const tot=document.createElement("div");tot.className="price";tot.style.margin="12px 0";
+ const link=document.createElement("a");link.className="btn";link.style.cssText="display:block;margin-bottom:8px";link.textContent="Pay with UPI";
+ const note=document.createElement("div");note.className="note";
+ note.textContent="Your UPI app will open with the amount filled in. Pay after you have met the seller and checked the item. Screenshot the payment.";
+ const x=document.createElement("button");x.className="btn g";x.style.width="100%";x.textContent="Close";x.onclick=()=>d.close();
+ function calc(){
+  const mo=rent?Math.max(1,Math.min(it.months,Number(mi.value)||1)):1;
+  const total=rent?(Number(it.price)*mo+Number(it.dep||0)):Number(it.price);
+  info.textContent=rent?("Rent ₹"+it.price+" × "+mo+" month(s)"+(it.dep?" + ₹"+it.dep+" refundable deposit":"")):"One-time purchase";
+  tot.textContent="Total: ₹"+total;
+  link.href="upi://pay?pa="+encodeURIComponent(it.upi)+"&pn="+encodeURIComponent(it.name)+"&am="+total+"&cu=INR&tn="+encodeURIComponent("CampusSwap: "+String(it.title).slice(0,40));
+ }
+ if(mi)mi.oninput=calc;
+ d.append(tot,link,note,x);calc();d.showModal();
+}
+
+async function persist(list){await db.doc("listings/"+uid).set({items:list.map(({ownerId,...r})=>r)})}
+async function removeItem(id){
+ if(local.some(i=>i.id===id)){local=local.filter(i=>i.id!==id);draw();drawMine();return}
+ try{await persist(items.filter(i=>i.ownerId===uid&&i.id!==id))}catch(e){alert("Could not remove right now.")}
+}
+
+function say(t,ok){const m=$("msg");m.textContent=t;m.className=ok?"ok":"er"}
+$("mode").onchange=()=>{const r=$("mode").value==="rent";$("plabel").textContent=r?"Rent per month (₹)":"Selling price (₹)";$("dwrap").style.display=r?"":"none";$("mwrap").style.display=r?"":"none"};
+$("submit").onclick=async()=>{
+ const r=$("mode").value==="rent";
+ const it={id:"i"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),title:$("title").value.trim(),cat:$("cat").value,mode:$("mode").value,price:Number($("price").value),dep:r?Number($("dep").value||0):0,months:r?Number($("months").value||1):0,cond:$("cond").value,desc:$("desc").value.trim(),name:$("name").value.trim(),phone:$("phone").value.replace(/\D/g,""),upi:$("upi").value.trim(),college:$("college").value.trim(),ts:Date.now()};
+ if(it.title.length<3)return say("Please enter the item name.");
+ if(!(it.price>=0)||$("price").value==="")return say("Please enter a price.");
+ if(it.name.length<2)return say("Please enter your name.");
+ if(!/^[6-9]\d{9}$/.test(it.phone))return say("Enter a valid 10-digit mobile number.");
+ if(!/^[\w.\-]{2,}@[\w]{2,}$/.test(it.upi))return say("Enter a valid UPI ID like name@bank.");
+ $("submit").disabled=true;
+ try{
+  if(db&&uid){await persist([...items.filter(i=>i.ownerId===uid),it]);say("Listed! Students can now see your item.",true)}
+  else{local=[{...it,ownerId:"local"},...local];say("Demo mode: listed on this device only. Sign in to publish for everyone.",true);draw()}
+  ["title","price","desc"].forEach(k=>$(k).value="");
+ }catch(e){say("Could not publish right now. Please try again.")}
+ $("submit").disabled=false;
+};
+
+
+let wItems=[],wLocal=[];
+const WSAMPLE=[{id:"w1",ownerId:"sample",title:"Engineering drawing kit",cat:"Engineering",budget:200,months:6,note:"Need it for first-sem ED classes.",name:"Sample Student",phone:"9000000004",college:"Sample College",ts:2},{id:"w2",ownerId:"sample",title:"Anatomy textbook (any edition)",cat:"Books",budget:400,months:0,note:"",name:"Sample Student",phone:"9000000005",college:"Sample College",ts:1}];
+const wAll=()=>{const r=[...wLocal,...wItems];return r.length?r:WSAMPLE};
+function wcard(it,own){
+ const c=document.createElement("div");c.className="card";
+ const top=document.createElement("div");top.className="top";
+ const ic=document.createElement("span");ic.className="ic";ic.textContent=CATS[it.cat]||"🎒";
+ const tg=document.createElement("span");tg.className="tag w";tg.textContent="Wanted";top.append(ic,tg);
+ const h=document.createElement("h3");h.textContent=clean(it.title);
+ const p=document.createElement("p");p.textContent=clean(it.note)||"Looking for this item.";
+ const m=document.createElement("div");m.className="meta";
+ m.textContent=[it.college,Number(it.months)>0?"For "+it.months+" months":"To buy"].filter(Boolean).join(" · ");
+ c.append(top,h,p,m);
+ if(Number(it.budget)>0){const pr=document.createElement("div");pr.className="price";pr.textContent="Budget ₹"+Number(it.budget);c.append(pr)}
+ const a=document.createElement("div");a.className="acts";
+ if(own){const d=document.createElement("button");d.className="btn g";d.textContent="Remove";d.onclick=()=>wremove(it.id);a.append(d)}
+ else{const w=document.createElement("a");w.className="btn";w.textContent="I have this";w.target="_blank";w.rel="noopener";
+  w.href="https://wa.me/91"+String(it.phone||"").replace(/\D/g,"")+"?text="+encodeURIComponent("Hi, I saw your request on CampusSwap and I have: "+it.title);a.append(w)}
+ c.append(a);return c}
+function drawW(){
+ const g=$("wgrid");g.innerHTML="";const l=wAll();
+ if(!wLocal.length&&!wItems.length){const n=document.createElement("div");n.className="note";n.style.gridColumn="1/-1";n.textContent="These are sample requests. Post a real one above!";g.append(n)}
+ l.forEach(i=>g.append(wcard(i,i.ownerId==="local"||(uid&&i.ownerId===uid))));
+}
+const wstrip=l=>l.map(({ownerId,...r})=>r);
+async function wpersist(l){await db.doc("wanted/"+uid).set({items:wstrip(l)})}
+async function wremove(id){
+ if(wLocal.some(i=>i.id===id)){wLocal=wLocal.filter(i=>i.id!==id);drawW();return}
+ try{await wpersist(wItems.filter(i=>i.ownerId===uid&&i.id!==id))}catch(e){alert("Could not remove right now.")}
+}
+function wsay(t,ok){const m=$("wmsg");m.textContent=t;m.className=ok?"ok":"er"}
+$("wsubmit").onclick=async()=>{
+ const it={id:"w"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),title:$("wtitle").value.trim(),cat:$("wcat").value,budget:Number($("wbudget").value||0),months:Number($("wmonths").value||0),note:$("wnote").value.trim(),name:$("wname").value.trim(),phone:$("wphone").value.replace(/\D/g,""),college:$("wcollege").value.trim(),ts:Date.now()};
+ if(it.title.length<3)return wsay("Please say what you need.");
+ if(it.name.length<2)return wsay("Please enter your name.");
+ if(!/^[6-9]\d{9}$/.test(it.phone))return wsay("Enter a valid 10-digit mobile number.");
+ $("wsubmit").disabled=true;
+ try{
+  if(db&&uid){await wpersist([...wItems.filter(i=>i.ownerId===uid),it]);wsay("Posted! Students with this item can now contact you.",true)}
+  else{wLocal=[{...it,ownerId:"local"},...wLocal];wsay("Demo mode: posted on this device only. Sign in to publish for everyone.",true);drawW()}
+  ["wtitle","wbudget","wnote"].forEach(k=>$(k).value="");
+ }catch(e){wsay("Could not post right now. Please try again.")}
+ $("wsubmit").disabled=false;
+};
+Object.keys(CATS).forEach(c=>{const o=document.createElement("option");o.textContent=c;$("wcat").append(o)});
+Object.keys(CATS).forEach(c=>{const o=document.createElement("option");o.textContent=c;$("cat").append(o)});
+$("fc").innerHTML='<option value="">All categories</option>'+Object.keys(CATS).map(c=>"<option>"+c+"</option>").join("");
+$("q").oninput=draw;$("fc").onchange=draw;$("fm").onchange=draw;
+draw();drawW();
+
+(async()=>{
+ try{
+  if(!window.claude)return;
+  db=await claude.use("db");const u=await claude.use("user");if(u)uid=await u.id();
+  if(db){$("who").textContent="Signed in";db.collection("wanted").onSnapshot(sn=>{wItems=[];sn.docs.forEach(d=>{const v=d.data()||{};(Array.isArray(v.items)?v.items:[]).forEach(i=>wItems.push({...i,ownerId:d.id}))});wItems.sort((a,b)=>(b.ts||0)-(a.ts||0));drawW()},()=>{});
+   db.collection("listings").onSnapshot(sn=>{items=[];sn.docs.forEach(d=>{const v=d.data()||{};(Array.isArray(v.items)?v.items:[]).forEach(i=>items.push({...i,ownerId:d.id}))});items.sort((a,b)=>(b.ts||0)-(a.ts||0));draw();if(!$("v-mine").hidden)drawMine()},()=>{})}
+ }catch(e){}
+})();
+</script>
+</body>
+</html>
